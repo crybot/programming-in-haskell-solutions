@@ -92,8 +92,11 @@ token parser = do
 symbol :: String -> Parser String
 symbol x = token $ string x
 
-natural ::  Parser Int
+natural :: Parser Int
 natural = token nat
+
+integer :: Parser Int
+integer = token int
 
 
 --main :: IO ()
