@@ -12,22 +12,21 @@
 
 import ParserUtils
 import Control.Applicative
+import Data.Functor (($>))
 
 expr :: Parser Int
 expr = do t <- term
-          do
-            op <- symbol "+" <|> symbol "-"
-            e <- expr
-            return (if op == "+" then t + e else t - e)
-            <|> return t
+          do op <- symbol "+" $> (+) <|> symbol "-" $> (-)
+             e <- expr
+             return $ t `op` e
+             <|> return t
 
 term :: Parser Int
 term = do p <- power
-          do
-            op <- symbol "*" <|> symbol "/"
-            t <- term
-            return (if op == "*" then p * t else p `div` t)
-            <|> return p
+          do op <- symbol "*" $> (*) <|> symbol "/" $> div
+             t <- term
+             return $ p `op` t
+             <|> return p
 
 power :: Parser Int
 power = do f <- factor
